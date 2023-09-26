@@ -7,4 +7,4 @@ if [ $# -eq 0 ]; then
   exit 1
 fi
 
-sed '1d;s/^"POLYGON ((\(.*\)))",.*,$/\1/g' "${1}"
+sed '1d;/^,$/d;s/^"POLYGON ((\(.*\)))".*$/\1/g' "${1}"
