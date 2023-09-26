@@ -1,0 +1,29 @@
+name: Trim CSV Pipeline
+on:
+  push:
+    branches:
+      - main
+jobs:
+  trim:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Get changed files
+        id: changed-files
+        run: |
+          git fetch --prune
+          echo "::set-output name=files::$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }})"
+      - name: Trim CSV files
+        run: |
+          for file in ${{ steps.changed-files.outputs.files }}; do
+            echo "Trimming $file"
+            ./trim_csv.sh "input/${file}" > "output/${file::-4}"
+          done
+      - name: Commit changes
+        run: |
+          git config --global user.name "GH Pipeline"
+          git config --global user.email "info@krobier.com"
+          git add output/*
+          git commit -m "Added trimmed CSV files"
+          git push
