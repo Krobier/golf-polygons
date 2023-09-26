@@ -22,7 +22,7 @@ jobs:
       #     done
       - name: Trim CSV files
         run: |
-          for file in ${ls input}; do
+          for file in $(ls input); do
             echo "Trimming $file"
             ./trim_csv.sh "input/${file}" > "output/${file::-4}"
           done
